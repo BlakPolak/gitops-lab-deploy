@@ -1,0 +1,49 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-gbaas-ipv4
+  namespace: default
+  annotations:
+    ae-version: TEST
+    environment: d1
+  labels:
+    source: gbaas
+spec:
+  podSelector:
+    matchLabels:
+      app: nginxhello
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+#             - 193.16.224.5/32
+            - 45.81.18.0/23
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-gbaas-ipv6
+  namespace: default
+  annotations:
+    ae-version: TEST
+    environment: d1
+  labels:
+    source: gbaas
+spec:
+  podSelector:
+    matchLabels:
+        app: nginxhello
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: ::/0
+            except:
+            - 2001:1500::/32
+            - 2001:16c0:a::/48
